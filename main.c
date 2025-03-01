@@ -11,6 +11,9 @@ typedef struct Node {
 
 // get the strings from db
 // get the width of a letter in a font
+
+// when resizing just rerun the initial calculations but with different width
+
 void drawMultilineString(char* wholeString, Node node) {
     // get the length of the string in pixels or something
     int l = MeasureText(wholeString, 10);
@@ -22,7 +25,7 @@ void drawMultilineString(char* wholeString, Node node) {
         wholeString[20] = '\0';
         DrawText(wholeString, node.x, node.y, 10, BLACK);
         wholeString[20] = temp;
-        DrawText((char*)(wholeString+20), node.x, node.y+30, 10, BLACK); // it is even working somehow
+        DrawText((char*)(wholeString+20), node.x, node.y+30, 10, BLACK); // 
     } else {
         DrawText(wholeString, node.x, node.y, 10, BLACK);
     }
