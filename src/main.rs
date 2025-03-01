@@ -21,9 +21,23 @@ impl Node<'_> {
             self.width, 
             self.height, 
             self.color
-        ); 
+        );
+
+        handle.draw_text(self.header, self.x+5, self.y+5, 15, Color::RED); // add text color field
+
+        handle.draw_text(self.text, self.x+5, self.y+25, 15, Color::RED); // add clipping
     }
 }
+
+
+
+
+fn panning_handler(delta: Vector2, node: &mut Node) {
+    // one rectangle for now
+    node.x += delta.x as i32;
+    node.y += delta.y as i32;  
+}
+
 
 fn main() {
    
@@ -35,14 +49,24 @@ fn main() {
     
     rl.set_target_fps(60);
 
-    let first_node = Node {
+    let mut first_node = Node {
         x: 100,
         y: 200,
-        color: Color::BLUE,
-        width: 50,
-        height: 300,
-        header: "one",
-        text: "two"
+        color: Color::BLACK,
+        width: 300,
+        height: 200,
+        header: "title one",
+        text: "this is the text, main content of the node one"
+    };
+
+    let mut second_node = Node {
+        x: 500,
+        y: 500,
+        color: Color::BLACK,
+        width: 350,
+        height: 350,
+        header: "title two",
+        text: "this is the text, main content of the node one"
     };
     
 
@@ -51,6 +75,12 @@ fn main() {
 
 
         let mut d = rl.begin_drawing(&thread);
+
+        let mouse_delta = d.get_mouse_delta(); 
+        match mouse_delta {
+            Vector2 {x:0.0, y:0.0} => (),
+            _ => panning_handler(mouse_delta, &mut first_node)  // check for left click and maybe some key together, or flag
+        };
        
         d.clear_background(Color::WHITE);
        
@@ -58,6 +88,7 @@ fn main() {
         d.draw_text_codepoints(d.get_font_default(), "hellow", Vector2 {x:10.0,y:20.0}, 25.0, 1.0, Color::BLACK);
 
         first_node.draw(&mut d);
+        second_node.draw(&mut d);
 
         
 
