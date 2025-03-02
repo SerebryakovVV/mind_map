@@ -1,14 +1,12 @@
 use raylib::prelude::*;
 
 
-
 struct Node<'a> {
     x: i32,
     y: i32,
     color: Color,
     width: i32,
     height: i32,
-    header: &'a str,
     text: &'a str
 }
 
@@ -31,7 +29,7 @@ struct Node<'a> {
 
 
 
-fn draw_nodes(handle: &mut RaylibDrawHandle, nodes: &mut Vec<Node>) {
+fn draw_nodes(handle: &mut RaylibDrawHandle, nodes: &mut Vec<Node>, font: &Font) {
     for n in nodes {
         handle.draw_rectangle(
             n.x, 
@@ -41,14 +39,24 @@ fn draw_nodes(handle: &mut RaylibDrawHandle, nodes: &mut Vec<Node>) {
             n.color
         );
 
-        // handle.draw_text(n.header, n.x+5, n.y+5, 15, Color::RED); // add text color field
-        
-        
         // add clipping
         handle.draw_text(n.text, n.x, n.y, 15, Color::RED); 
         
     
-    
+        handle.draw_text_ex(font, "text", Vector2 {x:800.0, y:800.0}, 12.0, 1.0,  Color::RED); 
+        
+        
+
+        // the initial idea is to get the string, check the width word by word, on >node.width start from new line 
+       
+       let mut line: str = ;
+       for word in n.text.split_whitespace() {
+
+       }
+
+
+        // let size = font.measure_text("text text thseiltsjh;lfha;ldfks ", 12.0, 1.0); // returns width and height
+        // print!("{:#?}", size);
     
     
     }
@@ -61,6 +69,9 @@ fn panning_handler(delta: Vector2, nodes: &mut Vec<Node>) {
     }
 }
 
+// https://www.raylib.com/examples/core/loader.html?name=core_2d_camera_mouse_zoom
+// https://www.raylib.com/examples/core/loader.html?name=core_custom_frame_control
+// https://www.raylib.com/examples/core/loader.html?name=core_scissor_test
 
 // when it gets too small it cant grow back
 // i am changing the position but i need to keep the inital x and y and then apply the zoom factor
@@ -97,32 +108,26 @@ fn panning_handler(delta: Vector2, nodes: &mut Vec<Node>) {
 fn main() {
 
 
-    let mut nodes: Vec<Node> = vec![]; // maybe create with given capacity
-    let mut first_node = Node {
-        x: 100,
-        y: 200,
-        color: Color::BLACK,
-        width: 300,
-        height: 200,
-        header: "title one",
-        text: "this is the text, main content of the node one"  // add all the nodes to the array, then run the updates on pan
-    }; // they will be anyway, sql
-    let mut second_node = Node {
-        x: 500,
-        y: 500,
-        color: Color::BLACK,
-        width: 350,
-        height: 350,
-        header: "title two",
-        text: "this is the text, main content of the node one"
-    };
-    nodes.push(first_node);
-    nodes.push(second_node);
-
-    let zoom_levels = [0.1, 0.3, 0.5, 0.7, 1.0, 1.1, 1.3, 1.5, 1.7, 2.0];
-    let mut zoom_index = 4;
-
-
+    let mut nodes: Vec<Node> = vec![
+        Node {
+            x: 100,
+            y: 200,
+            color: Color::BLACK,
+            width: 300,
+            height: 200,
+            text: "this is the text, main content of the node one"  
+        },
+        Node {
+            x: 500,
+            y: 500,
+            color: Color::BLACK,
+            width: 350,
+            height: 350,
+            text: "this is the text, main content of the node one"
+        }
+    ];
+    
+    
    
     let (mut rl, thread) = raylib::init()
         .size(900, 900)
@@ -130,21 +135,11 @@ fn main() {
         .title("Mind Map")
         .build();
 
-    
+    let font = rl.load_font_ex(&thread, "OpenSans-Regular.ttf", 12, None).expect("font not loaded");
     rl.set_target_fps(60);
 
 
-    let font = rl.load_font_ex(&thread, "OpenSans-Regular.ttf", 12, None).expect("font not loaded");
-
-    
-    
-
-    let mut zoom_factor: f32 = 1.0;
-
     while !rl.window_should_close() {
-
-        
-
 
         let mut d = rl.begin_drawing(&thread);
 
@@ -152,7 +147,7 @@ fn main() {
             let mouse_position_delta = d.get_mouse_delta(); 
             match mouse_position_delta {
                 Vector2 {x:0.0, y:0.0} => (),
-                _ => panning_handler(mouse_position_delta, &mut nodes)  // check for left click and maybe some key together, or flag
+                _ => panning_handler(mouse_position_delta, &mut nodes)
             };
         }
         
@@ -162,19 +157,8 @@ fn main() {
         // }
        
 
-
-       d.draw_text_ex(&font, "text", Vector2 {x:800.0, y:800.0}, 12.0, 1.0,  Color::RED);
-       
-    //    font.measure_text(text, font_size, spacing);
-
-
         d.clear_background(Color::WHITE);
-       
-        d.draw_text_codepoints(d.get_font_default(), "hellow", Vector2 {x:10.0,y:20.0}, 25.0, 1.0, Color::BLACK);
-
-        draw_nodes(&mut d, &mut nodes);
-
-
+        draw_nodes(&mut d, &mut nodes, &font);
     }
 }
 
@@ -246,6 +230,22 @@ fn main() {
 
 
 
+
+// initial capacity collections
+
+
+
+
+
+
+
+
+
+
+  // d.draw_text_ex(&font, "text", Vector2 {x:800.0, y:800.0}, 12.0, 1.0,  Color::RED); 
+       
+        // let size = font.measure_text("text text thseiltsjh;lfha;ldfks ", 12.0, 1.0); // returns width and height
+        // print!("{:#?}", size);
 
 
 
