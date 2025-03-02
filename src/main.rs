@@ -38,16 +38,45 @@ fn panning_handler(delta: Vector2, node: &mut Node) {
     node.y += delta.y as i32;  
 }
 
+// take cursor position and a node
+fn zoom_handler(delta: f32, node: &mut Node, zoom: &mut f32, mouse_position: Vector2) {
+
+
+    // when it gets too small it cant grow back
+
+
+    if delta > 0.0 {
+        *zoom += 0.1;
+    } else {
+        *zoom -= 0.1;
+    }
+
+
+    // move part
+    node.x -= mouse_position.x as i32;
+    node.y -= mouse_position.y as i32;  
+
+
+    // zoom part
+    node.x = (node.x as f32 * (*zoom)) as i32;  // mental illness
+    node.y = (node.y as f32 * (*zoom)) as i32;  
+    node.width = (node.width as f32 * (*zoom)) as i32;  
+    node.height = (node.height as f32 * (*zoom)) as i32; 
+
+
+    // return part
+    node.x += mouse_position.x as i32;
+    node.y += mouse_position.y as i32; 
+
+    // when it gets too small it cant grow back
+}
+
+
 
 fn main() {
-   
-    let (mut rl, thread) = raylib::init()
-        .size(900, 900)
-        .title("Mind Map")
-        .build();
 
-    
-    rl.set_target_fps(60);
+
+    let mut nodes: Vec<Node> = vec![]; // maybe create with given capacity
 
     let mut first_node = Node {
         x: 100,
@@ -56,8 +85,8 @@ fn main() {
         width: 300,
         height: 200,
         header: "title one",
-        text: "this is the text, main content of the node one"
-    };
+        text: "this is the text, main content of the node one"  // add all the nodes to the array, then run the updates on pan
+    }; // they will be anyway, sql
 
     let mut second_node = Node {
         x: 500,
@@ -68,19 +97,46 @@ fn main() {
         header: "title two",
         text: "this is the text, main content of the node one"
     };
+
+    nodes.push(first_node);
+    nodes.push(second_node);
+
+
+   
+    let (mut rl, thread) = raylib::init()
+        .size(900, 900)
+        .title("Mind Map")
+        .build();
+
+    
+    rl.set_target_fps(60);
+
+    
     
 
 
     while !rl.window_should_close() {
 
+        let mut zoom_factor: f32 = 1.0;
+
 
         let mut d = rl.begin_drawing(&thread);
 
-        let mouse_delta = d.get_mouse_delta(); 
-        match mouse_delta {
-            Vector2 {x:0.0, y:0.0} => (),
-            _ => panning_handler(mouse_delta, &mut first_node)  // check for left click and maybe some key together, or flag
-        };
+        if d.is_mouse_button_down(MouseButton::MOUSE_BUTTON_LEFT) {
+            let mouse_position_delta = d.get_mouse_delta(); 
+            match mouse_position_delta {
+                Vector2 {x:0.0, y:0.0} => (),
+                _ => panning_handler(mouse_position_delta, &mut first_node)  // check for left click and maybe some key together, or flag
+            };
+        }
+        
+
+
+        let mouse_wheel_delta = d.get_mouse_wheel_move();
+        if mouse_wheel_delta != 0.0 {
+            zoom_handler(mouse_wheel_delta, &mut second_node, &mut zoom_factor, d.get_mouse_position());
+        }
+        println!("{}", mouse_wheel_delta);
        
         d.clear_background(Color::WHITE);
        
