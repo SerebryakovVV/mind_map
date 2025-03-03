@@ -49,10 +49,10 @@ fn draw_nodes(handle: &mut RaylibDrawHandle, nodes: &mut Vec<Node>, font: &Font)
 
         // the initial idea is to get the string, check the width word by word, on >node.width start from new line 
        
-       let mut line: str = ;
-       for word in n.text.split_whitespace() {
+    //    let mut line: str = ;
+    //    for word in n.text.split_whitespace() {
 
-       }
+    //    }
 
 
         // let size = font.measure_text("text text thseiltsjh;lfha;ldfks ", 12.0, 1.0); // returns width and height
@@ -68,6 +68,50 @@ fn panning_handler(delta: Vector2, nodes: &mut Vec<Node>) {
         n.y += delta.y as i32;
     }
 }
+
+fn move_node(node: &mut Node, delta: Vector2) {
+    node.x += delta.x as i32;
+    node.y += delta.y as i32;
+}
+
+
+
+fn mouse_target_check(delta: Vector2, position: Vector2, nodes: &mut Vec<Node>) {
+    // later can add flags, checking of borders, corners
+    let mut found_in_nodes = false;
+    for n in &mut *nodes {
+        if position.x > n.x as f32 
+        && position.x < (n.x + n.width) as f32 
+        && position.y > n.y as f32 
+        && position.y < (n.y + n.height) as f32 {
+            move_node(n, delta);
+            found_in_nodes = true;
+            break;
+        } 
+    }
+    if !found_in_nodes {
+        panning_handler(delta, nodes);
+    }
+}
+
+
+
+fn resize_node(delta: Vector2, position: Vector2, nodes: &mut Vec<Node>) {
+    for n in &mut *nodes {
+        if position.x > (n.x - 25) as f32
+        && position.x < (n.x + 25) as f32
+        && position.y > (n.y - 25) as f32
+        && position.y < (n.y + 25) as f32 {
+            n.x += delta.x as i32;                // maybe instead equalize the x and y to the x and y of the mouse
+            n.y += delta.y as i32;
+            n.width -= delta.x as i32;
+            n.height -= delta.y as i32;
+            
+        }
+    }
+}
+
+
 
 // https://www.raylib.com/examples/core/loader.html?name=core_2d_camera_mouse_zoom
 // https://www.raylib.com/examples/core/loader.html?name=core_custom_frame_control
@@ -143,11 +187,16 @@ fn main() {
 
         let mut d = rl.begin_drawing(&thread);
 
+        
+
         if d.is_mouse_button_down(MouseButton::MOUSE_BUTTON_LEFT) {
-            let mouse_position_delta = d.get_mouse_delta(); 
-            match mouse_position_delta {
+            let mouse_position_delta = d.get_mouse_delta();
+            let mouse_position = d.get_mouse_position();              // i can add a variable that checks if one of the nodes is being dragged
+            match mouse_position_delta {                              // 
                 Vector2 {x:0.0, y:0.0} => (),
-                _ => panning_handler(mouse_position_delta, &mut nodes)
+                // _ => panning_handler(mouse_position_delta, &mut nodes)
+                // _ => mouse_target_check(mouse_position_delta, mouse_position, &mut nodes)
+                _ => resize_node(mouse_position_delta, mouse_position, &mut nodes)
             };
         }
         
