@@ -1,29 +1,28 @@
 use rusqlite::{self as rsql, ffi::Error};
 
 
-pub struct DB<'a> {
-    path: &'a str,
-    connection: Option<rsql::Connection>
+pub struct DB {
+    connection: rsql::Connection
 }
 
-impl<'a> DB<'a> {
+impl DB {
 
-    pub fn new(path: &'a str) -> Self {
+    pub fn new(path: & str) -> Self {
+        let connection = rsql::Connection::open(path).unwrap_or_else(|e| {
+            println!("DB connection error: {}", e); 
+            panic!();
+        });
         Self {
-            path: path,
-            connection: None
+            connection
         }
     }
 
-    pub fn connect(&mut self) {
-        self.connection = Some(rsql::Connection::open(&self.path).unwrap_or_else(|e| {
-            println!("DB connection error: {}", e); 
-            panic!();
-        }));
+    pub fn get_nodes(&self) {
+        let query_result = match self.connection.execute("select * from nodes", ()) {
+            Ok(_) => {},
+            Err(_) => {}
+        };
     }
-
-    
-
 
 }
 
