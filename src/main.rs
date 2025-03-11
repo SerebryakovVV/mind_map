@@ -1,35 +1,42 @@
 mod node;
-
-use node::Node;
-
-use raylib::prelude::*;
-
-
-// struct Node<'a> {
-//     x: i32,
-//     y: i32,
-//     color: Color,
-//     width: i32,
-//     height: i32,
-//     text: &'a str
-// }
+mod db;
+use node::*;
+use raylib::{prelude::*};
+use rusqlite as rsql;
 
 
-// impl Node<'_> {
-//     fn draw(&self, handle: &mut RaylibDrawHandle) -> () {
-//         handle.draw_rectangle(
-//             self.x, 
-//             self.y, 
-//             self.width, 
-//             self.height, 
-//             self.color
-//         );
+fn main() {
 
-//         handle.draw_text(self.header, self.x+5, self.y+5, 15, Color::RED); // add text color field
+    let test_node: Node = Node::new(25, 60, 300, 200, String::from("hello"));
 
-//         handle.draw_text(self.text, self.x+5, self.y+25, 15, Color::RED); // add clipping
-//     }
-// }
+    let (mut rlh, rlt) = raylib::init().size(800, 600)
+                                       .resizable()
+                                       .title("Mind Map")
+                                       .build();
+
+    let font = rlh.load_font_ex(&rlt, "OpenSans-Regular.ttf", 28, None).expect("font not loaded");
+
+    rlh.set_target_fps(120);
+
+    while !rlh.window_should_close() {
+
+        let mut rlDrawH = rlh.begin_drawing(&rlt);
+        
+        test_node.draw_body(&mut rlDrawH);
+        test_node.draw_text(&mut rlDrawH, &font);
+        
+        rlDrawH.clear_background(Color::WHITE);
+
+
+    }
+    
+}
+
+
+
+
+
+
 
 
 
@@ -66,17 +73,17 @@ use raylib::prelude::*;
 //     }
 // }
 
-fn panning_handler(delta: Vector2, nodes: &mut Vec<Node>) {
-    for n in nodes {
-        n.x += delta.x as i32;
-        n.y += delta.y as i32;
-    }
-}
+// fn panning_handler(delta: Vector2, nodes: &mut Vec<Node>) {
+//     for n in nodes {
+//         n.x += delta.x as i32;
+//         n.y += delta.y as i32;
+//     }
+// }
 
-fn move_node(node: &mut Node, delta: Vector2) {
-    node.x += delta.x as i32;
-    node.y += delta.y as i32;
-}
+// fn move_node(node: &mut Node, delta: Vector2) {
+//     node.x += delta.x as i32;
+//     node.y += delta.y as i32;
+// }
 
 
 
@@ -153,77 +160,30 @@ fn move_node(node: &mut Node, delta: Vector2) {
 
 
 
-fn main() {
 
-    let a: Node = Node {x:1,y:2,w:2,h:2};
 
-    // let mut nodes: Vec<Node> = vec![
-    //     Node {
-    //         x: 100,
-    //         y: 200,
-    //         color: Color::BLACK,
-    //         width: 300,
-    //         height: 200,
-    //         text: "this is the text, main content of the node one"  
-    //     },
-    //     Node {
-    //         x: 500,
-    //         y: 500,
-    //         color: Color::BLACK,
-    //         width: 350,
-    //         height: 350,
-    //         text: "this is the text, main content of the node one"
-    //     }
-    // ];
+ 
     
 
 
-    
-   
-    // let (mut rl, thread) = raylib::init()
-    //     .size(900, 900)
-    //     .resizable()
-    //     .title("Mind Map")
-    //     .build();
-
-    // let font = rl.load_font_ex(&thread, "OpenSans-Regular.ttf", 12, None).expect("font not loaded");
-    // rl.set_target_fps(60);
-
-
-    // while !rl.window_should_close() {
-
-    //     let mut d = rl.begin_drawing(&thread);
-
         
 
-    //     if d.is_mouse_button_down(MouseButton::MOUSE_BUTTON_LEFT) {
-    //         let mouse_position_delta = d.get_mouse_delta();
-    //         let mouse_position = d.get_mouse_position();              // i can add a variable that checks if one of the nodes is being dragged
-    //         match mouse_position_delta {                              // 
-    //             Vector2 {x:0.0, y:0.0} => (),
-    //             // _ => panning_handler(mouse_position_delta, &mut nodes)
-    //             // _ => mouse_target_check(mouse_position_delta, mouse_position, &mut nodes)
-    //             _ => resize_node(mouse_position_delta, mouse_position, &mut nodes)
-    //         };
-    //     }
+        // if d.is_mouse_button_down(MouseButton::MOUSE_BUTTON_LEFT) {
+        //     let mouse_position_delta = d.get_mouse_delta();
+        //     let mouse_position = d.get_mouse_position();              // i can add a variable that checks if one of the nodes is being dragged
+        //     match mouse_position_delta {                              // 
+        //         Vector2 {x:0.0, y:0.0} => (),
+        //         // _ => panning_handler(mouse_position_delta, &mut nodes)
+        //         // _ => mouse_target_check(mouse_position_delta, mouse_position, &mut nodes)
+        //         // _ => resize_node(mouse_position_delta, mouse_position, &mut nodes)
+        //     };
+        // }
         
-    //     // let mouse_wheel_delta = d.get_mouse_wheel_move();
-    //     // if mouse_wheel_delta != 0.0 {
-    //     //     zoom_handler(mouse_wheel_delta, &mut nodes, &mut zoom_factor, d.get_mouse_position());
-    //     // }
+        // let mouse_wheel_delta = d.get_mouse_wheel_move();
+        // if mouse_wheel_delta != 0.0 {
+        //     zoom_handler(mouse_wheel_delta, &mut nodes, &mut zoom_factor, d.get_mouse_position());
+        // }
        
-
-    //     d.clear_background(Color::WHITE);
-    //     draw_nodes(&mut d, &mut nodes, &font);
-    // }
-}
-
-
-
-
-
-
-
 
 
 
@@ -309,146 +269,3 @@ fn main() {
 
 
 
-
-// use rusqlite as rsql;
-
-// mod expressions;
-
-// #[derive(Debug)]
-// struct User<'a> {
-//     // name: String
-//     name: & 'a str
-// }
-
-
-// const COMMAND_CAPACITY: usize = 500;
-// const DB_PATH: &str = "tasks.db3";
-
-
-// struct Task {
-//     id: i32,
-//     name: String   // learn lifetimes, get rid of the allocations
-// }
-
-
-// fn add_task(arg: &str, con: &rsql::Connection) {
-//     println!("add task {}", arg);
-
-//     if false {
-        
-//     }
-
-// }
-
-
-// fn delete_task(arg: &str, con: &rsql::Connection) {
-//     println!("delete_task {}", arg);
-
-//     if false {
-        
-//     }
-
-// }
-
-
-// fn list_tasks(con: &rsql::Connection) {
-//     let mut statement = match con.prepare("SELECT id, name FROM tasks") {
-//         Ok(s) => s,
-//         Err(e) => {
-//             println!("Error preparing ls query! {}", e);
-//             return;
-//         }
-//     };
-//     match statement.query_map([], |row| Ok(
-//         Task {
-//             id: row.get(0)?,
-//             name: row.get(1)?
-//         }
-//     )) {
-//         Ok(rows) => {
-//             for (index, row) in rows.enumerate() {
-//                 match row {
-//                     Ok(r) => {
-//                         println!("{}) {}", index + 1, r.name);
-//                     },
-//                     Err(e) => {
-//                         println!("Error in rows transfer in ls, {}", e);
-//                         return;
-//                     }
-//                 }
-//             }
-//         },
-//         Err(e) => {
-//             println!("Error mapping the rows in ls, {}", e);
-//             return;
-//         }
-//     };
-// }
-
-
-// fn main() -> rsql::Result<()> {
-//     let db = rsql::Connection::open(DB_PATH).expect("error connecting to db");
-//     let mut command: String = String::with_capacity(COMMAND_CAPACITY);
-//     let input = std::io::stdin();
-//     loop {
-//         if let Err(e) = input.read_line(&mut command) {
-//             println!("Error reading the input! {}", e);
-//             continue;
-//         };
-//         let command_parts: Vec<&str> = command
-//                                               .trim()
-//                                               .split_ascii_whitespace()
-//                                               .collect();                    
-//         match command_parts.get(0) {
-//             Some(&c) => {
-//                 match c {
-//                     "delete" => {
-//                         match command_parts.get(1) {
-//                             Some(&a) => delete_task(a, &db),
-//                             None => println!("No argument provided!")
-//                         }
-//                     },
-//                     "add" => {
-//                         match command_parts.get(1) {
-//                             Some(&a) => add_task(a, &db),
-//                             None => println!("No argument provided!") // this should actually just call the function and 
-//                         }                                             // then read the task inside to that function
-//                     },
-//                     "ls" => list_tasks(&db),
-//                     "q" => {return Ok(());},
-//                     _ => println!("Unknown command")
-//                 }
-//             },
-//             None => println!("No command provided!")
-//         }
-//         command.clear();
-//         // print!("> ");
-//     }
-// }
-
-
-
-
-// db.execute("DROP TABLE users", ())?;
-
-    // let query_result = match db.execute("CREATE TABLE users (id INTEGER PRIMARY KEY,name  TEXT NOT NULL)", ()) {
-    //     Err(e) => {println!("{}", e); panic!("first");},
-    //     Ok(r) => r 
-    // };
-
-    // let query_result = match db.execute("insert into users (name) values ('valentin')", ()) {
-    //     Err(e) => {println!("{}", e); panic!("first");},
-    //     Ok(r) => r 
-    // };
-
-    // let mut statement = db.prepare("select name from users")?;
-    // let query_result = statement.query_map([], |el| {
-    //     Ok(User{name:el.get(0)?})
-    // })?;
-
-  
-
-    // for u in query_result {
-    //     println!("{:?}", u);
-        
-    // }

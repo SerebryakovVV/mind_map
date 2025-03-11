@@ -5,3 +5,4 @@ edition = "2021"
 
 [dependencies]
 raylib = "5.0.0"
+rusqlite = "0.34.0"
