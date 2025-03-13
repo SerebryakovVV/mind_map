@@ -1,5 +1,5 @@
-use rusqlite::{self as rsql, ffi::Error};
-
+use rusqlite::{self as rsql, Result as ResultSql};
+use crate::node::Node;
 
 pub struct DB {
     connection: rsql::Connection
@@ -18,10 +18,26 @@ impl DB {
     }
 
     pub fn get_nodes(&self) {
-        let query_result = match self.connection.execute("select * from nodes", ()) {
-            Ok(_) => {},
-            Err(_) => {}
+        let mut statement = self.connection.prepare("SELECT x, y, w, h FROM nodes").unwrap();
+        let nodes_iter = statement.query_map([], |row| {
+            Ok(
+                Node {
+                    x: row.get(0)?,
+                    y: row.get(0)?,
+                    w: row.get(0)?,
+                    h: row.get(0)?,
+                    text: String::new()
+                }
+            )
+        }).unwrap();
+
+        println!("something here");
+
+        for n in nodes_iter {
+            println!("{:?}", n.unwrap());
         };
+
+        // Ok(())
     }
 
 }
@@ -30,7 +46,18 @@ impl DB {
 
 
 
+// let mut stmt = conn.prepare("SELECT id, name, data FROM person")?;
+// let person_iter = stmt.query_map([], |row| {
+//     Ok(Person {
+//         id: row.get(0)?,
+//         name: row.get(1)?,
+//         data: row.get(2)?,
+//     })
+// })?;
 
+// for person in person_iter {
+//     println!("Found person {:?}", person.unwrap());
+// }
 
 
 // pub fn get_nodes(&self) {

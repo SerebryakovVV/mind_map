@@ -19,6 +19,7 @@ fn main() {
 
     
     let db_inst = db::DB::new(DB_PATH);
+    db_inst.get_nodes();
 
     let (mut rlh, rlt) = raylib::init().size(800, 600)
                                        .resizable()
@@ -33,8 +34,8 @@ fn main() {
 
         let mut rlDrawH = rlh.begin_drawing(&rlt);
         
-        test_node.draw_body(&mut rlDrawH);
-        test_node.draw_text(&mut rlDrawH, &font);
+        // test_node.draw_body(&mut rlDrawH);
+        // test_node.draw_text(&mut rlDrawH, &font);
         
         rlDrawH.clear_background(Color::WHITE);
 

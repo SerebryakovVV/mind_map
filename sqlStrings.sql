@@ -3,7 +3,7 @@ CREATE TABLE
         id INTEGER PRIMARY KEY AUTOINCREMENT, 
         x INTEGER NOT NULL, 
         y INTEGER NOT NULL, 
-        width INTEGER NOT NULL, 
-        height INTEGER NOT NULL, 
+        w INTEGER NOT NULL, 
+        h INTEGER NOT NULL, 
         text TEXT
     );

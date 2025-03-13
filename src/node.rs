@@ -1,5 +1,8 @@
 use raylib::{prelude::*};
 
+
+// add id field
+#[derive(Debug)]
 pub struct Node {
     pub x: i32,
     pub y: i32,
