@@ -9,7 +9,13 @@ const DB_PATH: &str = "tasks.db3";
 
 fn main() {
 
-    let test_node: Node = Node::new(25, 60, 300, 200, String::from("hello"));
+    let test_node: Node = Node::new(
+        25, 
+        60, 
+        300, 
+        200, 
+        String::from("hello world this is a very long line and it will be displayed without the spaces")
+    );
 
     
     let db_inst = db::DB::new(DB_PATH);
