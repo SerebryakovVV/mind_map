@@ -14,7 +14,7 @@ fn main() {
         60, 
         300, 
         200, 
-        String::from("hello world this is a very long line and it will be displayed without the spaces")
+        String::from("hello world this is a very long line and it will be displayed without the spaces, very long string indeed, look how long it is, still going wow")
     );
 
     
@@ -27,7 +27,7 @@ fn main() {
 
     let font = rlh.load_font_ex(&rlt, "OpenSans-Regular.ttf", 28, None).expect("font not loaded");
 
-    rlh.set_target_fps(120);
+    rlh.set_target_fps(1);
 
     while !rlh.window_should_close() {
 
