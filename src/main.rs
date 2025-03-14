@@ -1,6 +1,8 @@
 mod node;
 mod db;
+mod map;
 use node::*;
+use map::*;
 use raylib::{prelude::*};
 use rusqlite as rsql;
 
@@ -17,6 +19,17 @@ fn main() {
         String::from("hello world this is a very long line and it will be displayed without the spaces, very long string indeed, look how long it is, still going wow")
     );
 
+    let test_node_two: Node = Node::new(
+        425, 
+        460, 
+        300, 
+        200, 
+        String::from("dfsdfs wsfindeed, sdfing wow")
+    );
+
+    let mut  map = Map {nodes: Vec::new()};
+    map.nodes.push(test_node);
+    map.nodes.push(test_node_two);
     
     let db_inst = db::DB::new(DB_PATH);
     db_inst.get_nodes();
@@ -28,74 +41,34 @@ fn main() {
 
     let font = rlh.load_font_ex(&rlt, "OpenSans-Regular.ttf", 28, None).expect("font not loaded");
 
-    rlh.set_target_fps(1);
+    rlh.set_target_fps(60);
 
     while !rlh.window_should_close() {
 
         let mut rlDrawH = rlh.begin_drawing(&rlt);
-        
-        test_node.draw_body(&mut rlDrawH);
-        test_node.draw_text(&mut rlDrawH, &font);
-        
+
+        let mouse_position = rlDrawH.get_mouse_position();
+        let mouse_delta = rlDrawH.get_mouse_delta();
+
+        if rlDrawH.is_mouse_button_down(MouseButton::MOUSE_BUTTON_LEFT) {
+            match mouse_delta {
+                Vector2 {x:0.0, y:0.0} => {},
+                _ => map.handle_panning(mouse_delta)
+            }
+        } else {
+
+        }
+
+
         rlDrawH.clear_background(Color::WHITE);
-
-
+        map.draw_nodes(&mut rlDrawH, &font);
+        
+    
     }
     
 }
 
 
-
-
-
-
-
-
-
-// fn draw_nodes(handle: &mut RaylibDrawHandle, nodes: &mut Vec<Node>, font: &Font) {
-//     for n in nodes {
-//         handle.draw_rectangle(
-//             n.x, 
-//             n.y, 
-//             // n.width, 
-//             // n.height, 
-//             // n.color
-//         );
-
-        // add clipping
-        // handle.draw_text(n.text, n.x, n.y, 15, Color::RED); 
-        
-    
-        // handle.draw_text_ex(font, "text", Vector2 {x:800.0, y:800.0}, 12.0, 1.0,  Color::RED); 
-        
-        
-
-        // the initial idea is to get the string, check the width word by word, on >node.width start from new line 
-       
-    //    let mut line: str = ;
-    //    for word in n.text.split_whitespace() {
-
-    //    }
-
-
-        // let size = font.measure_text("text text thseiltsjh;lfha;ldfks ", 12.0, 1.0); // returns width and height
-        // print!("{:#?}", size);
-    
-    
-//     }
-// }
-
-// fn panning_handler(delta: Vector2, nodes: &mut Vec<Node>) {
-//     for n in nodes {
-//         n.x += delta.x as i32;
-//         n.y += delta.y as i32;
-//     }
-// }
-
-// fn move_node(node: &mut Node, delta: Vector2) {
-//     node.x += delta.x as i32;
-//     node.y += delta.y as i32;
-// }
 
 
 
@@ -175,22 +148,6 @@ fn main() {
 
 
  
-    
-
-
-        
-
-        // if d.is_mouse_button_down(MouseButton::MOUSE_BUTTON_LEFT) {
-        //     let mouse_position_delta = d.get_mouse_delta();
-        //     let mouse_position = d.get_mouse_position();              // i can add a variable that checks if one of the nodes is being dragged
-        //     match mouse_position_delta {                              // 
-        //         Vector2 {x:0.0, y:0.0} => (),
-        //         // _ => panning_handler(mouse_position_delta, &mut nodes)
-        //         // _ => mouse_target_check(mouse_position_delta, mouse_position, &mut nodes)
-        //         // _ => resize_node(mouse_position_delta, mouse_position, &mut nodes)
-        //     };
-        // }
-        
         // let mouse_wheel_delta = d.get_mouse_wheel_move();
         // if mouse_wheel_delta != 0.0 {
         //     zoom_handler(mouse_wheel_delta, &mut nodes, &mut zoom_factor, d.get_mouse_position());
@@ -203,81 +160,16 @@ fn main() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // JUST EXAMPLES
 
 
-
-
-
-
-
-
-
-
-
 // use std::fs;
-
-
 // fn open_and_read(path: &str) -> Result<String, std::io::Error> {
 //     let content = fs::read_to_string(path)?;
 //     Ok(content)
 // }
 
 
-
-
 // initial capacity collections
-
-
-
-
-
-
-
-
-
-
-  // d.draw_text_ex(&font, "text", Vector2 {x:800.0, y:800.0}, 12.0, 1.0,  Color::RED); 
-       
-        // let size = font.measure_text("text text thseiltsjh;lfha;ldfks ", 12.0, 1.0); // returns width and height
-        // print!("{:#?}", size);
-
-
-
-
-
 
 

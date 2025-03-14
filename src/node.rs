@@ -33,7 +33,7 @@ impl Node {
         let words = self.text.split_whitespace();
         for w in words {
  
-            println!("{w}");
+            // println!("{w}");
             match 
                 (font.measure_text(&line, 28.0, 1.0).x 
                 +font.measure_text(w, 28.0, 1.0).x) > self.w as f32 - 15.0 {  

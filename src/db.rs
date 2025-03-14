@@ -43,48 +43,7 @@ impl DB {
 }
 
 
+// db.connection.execute
 
 
 
-// let mut stmt = conn.prepare("SELECT id, name, data FROM person")?;
-// let person_iter = stmt.query_map([], |row| {
-//     Ok(Person {
-//         id: row.get(0)?,
-//         name: row.get(1)?,
-//         data: row.get(2)?,
-//     })
-// })?;
-
-// for person in person_iter {
-//     println!("Found person {:?}", person.unwrap());
-// }
-
-
-// pub fn get_nodes(&self) {
-//     let mut statement = self.connection.prepare("select * from nodes")?;
-//     let query_result = statement.query_map([], |el| {
-//         Ok(User{name:el.get(0)?})
-//     })?;
-// }
-
-
-// db.execute("DROP TABLE users", ())?;
-
-    // let query_result = match db.execute("CREATE TABLE users (id INTEGER PRIMARY KEY,name  TEXT NOT NULL)", ()) {
-    //     Err(e) => {println!("{}", e); panic!("first");},
-    //     Ok(r) => r 
-    // };
-
-    // let query_result = match db.execute("insert into users (name) values ('valentin')", ()) {
-    //     Err(e) => {println!("{}", e); panic!("first");},
-    //     Ok(r) => r 
-    // };
-
-   
-
-  
-
-    // for u in query_result {
-    //     println!("{:?}", u);
-        
-    // }
