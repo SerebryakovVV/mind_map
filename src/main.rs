@@ -34,8 +34,8 @@ fn main() {
 
         let mut rlDrawH = rlh.begin_drawing(&rlt);
         
-        // test_node.draw_body(&mut rlDrawH);
-        // test_node.draw_text(&mut rlDrawH, &font);
+        test_node.draw_body(&mut rlDrawH);
+        test_node.draw_text(&mut rlDrawH, &font);
         
         rlDrawH.clear_background(Color::WHITE);
 
